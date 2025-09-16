@@ -1,0 +1,41 @@
+RewriteEngine On
+
+# Redirect index.php to clean URL
+RewriteCond %{THE_REQUEST} /index\.php\?page=([^\s&]+) [NC]
+RewriteRule ^index\.php$ /%1? [R=301,L]
+
+# Handle root directory - redirect to home
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^$ index.php?page=home [QSA,L]
+
+# Special handling for admin routes
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^admin/?$ index.php?page=admin [QSA,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^admin/([^/]+)/?$ index.php?page=admin&action=$1 [QSA,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^admin/([^/]+)/([^/]+)/?$ index.php?page=admin&action=$1&id=$2 [QSA,L]
+
+# Handle auth routes
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^auth/([^/]+)/?$ index.php?page=auth&action=$1 [QSA,L]
+
+# Route all other requests to index.php with the path as parameters
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^/]+)/?$ index.php?page=$1 [QSA,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^/]+)/([^/]+)/?$ index.php?page=$1&action=$2 [QSA,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^/]+)/([^/]+)/([^/]+)/?$ index.php?page=$1&action=$2&id=$3 [QSA,L]
