@@ -76,25 +76,13 @@ $breadcrumbs = isset($breadcrumbs) ? $breadcrumbs : [];
                             </div>
                         </div>
                     </div>
-                </div>
+                </div
 
                 <!-- View Toggle -->
-                <div class="btn-group btn-group-sm view-toggle" role="group">
-                    <input type="radio" class="btn-check" name="viewMode" id="tableView" checked>
-                    <label class="btn btn-outline-secondary" for="tableView" title="Table View">
-                        <i class="bi bi-table"></i>
-                    </label>
-                    <input type="radio" class="btn-check" name="viewMode" id="cardView">
-                    <label class="btn btn-outline-secondary" for="cardView" title="Card View">
-                        <i class="bi bi-grid-3x3-gap"></i>
-                    </label>
-                </div>
+              
 
                 <!-- Filter Button -->
-                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterSidebar">
-                    <i class="bi bi-funnel me-1"></i>
-                    <span class="d-none d-sm-inline">Filters</span>
-                </button>
+               
 
                 <!-- User Menu -->
                 <div class="dropdown user-menu">
