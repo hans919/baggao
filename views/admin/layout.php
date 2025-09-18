@@ -58,7 +58,7 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: hsl(var(--muted));
+            background-color: #ffffff;
             color: hsl(var(--foreground));
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-size: 14px;
@@ -69,7 +69,7 @@
         .admin-wrapper {
             display: flex;
             min-height: 100vh;
-            background: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--background)) 100%);
+            background: #ffffff;
         }
 
         .admin-content {
@@ -78,14 +78,14 @@
             flex-direction: column;
             margin-left: var(--sidebar-width);
             min-height: 100vh;
-            background-color: hsl(var(--background));
+            background-color: #ffffff;
             transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .main-content {
             flex: 1;
             padding: var(--content-padding);
-            background: hsl(var(--background));
+            background: #ffffff;
             min-height: calc(100vh - var(--header-height));
             margin-top: var(--header-height);
             position: relative;
@@ -425,8 +425,20 @@
                 --input: 217.2 32.6% 17.5%;
             }
 
+            body {
+                background-color: #ffffff !important;
+            }
+
             .admin-wrapper {
-                background: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--background)) 100%);
+                background: #ffffff !important;
+            }
+
+            .admin-content {
+                background-color: #ffffff !important;
+            }
+
+            .main-content {
+                background: #ffffff !important;
             }
         }
 

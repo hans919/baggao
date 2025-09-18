@@ -10,17 +10,119 @@ $breadcrumbs = [
 ob_start();
 ?>
 
-<?php
-$current_admin_page = 'ordinances';
-$page_title = 'Ordinances';
-$page_description = 'Manage municipal ordinances and local laws';
-$breadcrumbs = [
-    ['title' => 'Ordinances', 'url' => '#']
-];
+<style>
+    /* Ensure pure white background for ordinances page */
+    .main-content {
+        background-color: #ffffff !important;
+    }
+    
+    .page-content {
+        background-color: #ffffff !important;
+    }
+    
+    .content-container {
+        background-color: #ffffff !important;
+    }
+    
+    /* Ensure cards have white background */
+    .card {
+        background-color: #ffffff !important;
+    }
+    
+    .card-body {
+        background-color: #ffffff !important;
+    }
+    
+    .card-header {
+        background-color: #ffffff !important;
+    }
+    
+    .card-footer {
+        background-color: #ffffff !important;
+    }
+    
+    /* Light background areas should be very light gray instead of off-white */
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+    
+    .table-light {
+        background-color: #f8f9fa !important;
+    }
+    
+    /* Ensure table has white background */
+    .table {
+        background-color: #ffffff !important;
+    }
+    
+    .table tbody tr {
+        background-color: #ffffff !important;
+    }
+    
+    /* Override any gradient or colored backgrounds */
+    .admin-wrapper,
+    .admin-content,
+    body {
+        background-color: #ffffff !important;
+    }
+</style>
 
-// Start output buffering for content
-ob_start();
-?>
+<style>
+    /* Ensure pure white background for ordinances page */
+    .main-content {
+        background-color: #ffffff !important;
+    }
+    
+    .page-content {
+        background-color: #ffffff !important;
+    }
+    
+    .content-container {
+        background-color: #ffffff !important;
+    }
+    
+    /* Ensure cards have white background */
+    .card {
+        background-color: #ffffff !important;
+    }
+    
+    .card-body {
+        background-color: #ffffff !important;
+    }
+    
+    .card-header {
+        background-color: #ffffff !important;
+    }
+    
+    .card-footer {
+        background-color: #ffffff !important;
+    }
+    
+    /* Light background areas should be very light gray instead of off-white */
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+    
+    .table-light {
+        background-color: #f8f9fa !important;
+    }
+    
+    /* Ensure table has white background */
+    .table {
+        background-color: #ffffff !important;
+    }
+    
+    .table tbody tr {
+        background-color: #ffffff !important;
+    }
+    
+    /* Override any gradient or colored backgrounds */
+    .admin-wrapper,
+    .admin-content,
+    body {
+        background-color: #ffffff !important;
+    }
+</style>
 
 <!-- Enhanced Page Header -->
 <div class="d-flex justify-content-between align-items-start mb-4">

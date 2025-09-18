@@ -8,6 +8,35 @@ $breadcrumbs = [];
 ob_start();
 ?>
 
+<style>
+    /* Ensure pure white background for dashboard */
+    .main-content {
+        background-color: #ffffff !important;
+    }
+    
+    .page-content {
+        background-color: #ffffff !important;
+    }
+    
+    .content-container {
+        background-color: #ffffff !important;
+    }
+    
+    /* Ensure cards have white background */
+    .card {
+        background-color: #ffffff !important;
+    }
+    
+    /* Light background areas should be very light gray instead of off-white */
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+    
+    .bg-muted {
+        background-color: #f8f9fa !important;
+    }
+</style>
+
 <!-- Dashboard Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
