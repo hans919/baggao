@@ -11,7 +11,7 @@ ob_start();
 ?>
 
 <style>
-    /* Ensure pure white background for ordinances page */
+    /* Ensure pure white background */
     .main-content {
         background-color: #ffffff !important;
     }
@@ -62,64 +62,22 @@ ob_start();
     /* Override any gradient or colored backgrounds */
     .admin-wrapper,
     .admin-content,
-    body {
-        background-color: #ffffff !important;
-    }
-</style>
-
-<style>
-    /* Ensure pure white background for ordinances page */
-    .main-content {
+    body, .wrapper, .main-wrapper {
         background-color: #ffffff !important;
     }
     
-    .page-content {
+    /* Form inputs white background */
+    .form-control, .form-select {
         background-color: #ffffff !important;
     }
     
-    .content-container {
+    /* Modal backgrounds */
+    .modal-content {
         background-color: #ffffff !important;
     }
     
-    /* Ensure cards have white background */
-    .card {
-        background-color: #ffffff !important;
-    }
-    
-    .card-body {
-        background-color: #ffffff !important;
-    }
-    
-    .card-header {
-        background-color: #ffffff !important;
-    }
-    
-    .card-footer {
-        background-color: #ffffff !important;
-    }
-    
-    /* Light background areas should be very light gray instead of off-white */
-    .bg-light {
-        background-color: #f8f9fa !important;
-    }
-    
-    .table-light {
-        background-color: #f8f9fa !important;
-    }
-    
-    /* Ensure table has white background */
-    .table {
-        background-color: #ffffff !important;
-    }
-    
-    .table tbody tr {
-        background-color: #ffffff !important;
-    }
-    
-    /* Override any gradient or colored backgrounds */
-    .admin-wrapper,
-    .admin-content,
-    body {
+    /* Dropdown menus */
+    .dropdown-menu {
         background-color: #ffffff !important;
     }
 </style>
@@ -358,7 +316,7 @@ ob_start();
                                 </td>
                                 <td class="text-end pe-4">
                                     <div class="btn-group btn-group-sm">
-                                        <a href="<?= BASE_URL ?>ordinances/view/<?= $ordinance['id'] ?>" class="btn btn-outline-primary hover-shadow" title="View Details">
+                                        <a href="<?= BASE_URL ?>admin/view_ordinance/<?= $ordinance['id'] ?>" class="btn btn-outline-primary hover-shadow" title="View Details">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                         <a href="<?= BASE_URL ?>admin/edit_ordinance/<?= $ordinance['id'] ?>" class="btn btn-outline-secondary hover-shadow" title="Edit Ordinance">

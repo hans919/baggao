@@ -143,5 +143,24 @@ class OrdinanceController extends Controller {
         
         $this->redirect('ordinances/view/' . $ordinance_id);
     }
+    
+    public function admin_view($id = null) {
+        $this->requireAuth();
+        
+        if (!$id) {
+            $this->redirect('admin/ordinances');
+        }
+        
+        $ordinanceModel = new Ordinance();
+        $ordinance = $ordinanceModel->findByIdWithAuthor($id);
+        
+        if (!$ordinance) {
+            $_SESSION['error'] = 'Ordinance not found';
+            $this->redirect('admin/ordinances');
+        }
+        
+        $data = ['ordinance' => $ordinance];
+        $this->loadAdminView('admin/view_ordinance', $data);
+    }
 }
 ?>

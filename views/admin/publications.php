@@ -325,7 +325,7 @@ ob_start();
                                 </td>
                                 <td class="text-end pe-4">
                                     <div class="btn-group btn-group-sm">
-                                        <a href="<?= BASE_URL ?>publications/view/<?= $publication['id'] ?>" class="btn btn-outline-warning hover-shadow" title="View Details">
+                                        <a href="<?= BASE_URL ?>admin/view_publication/<?= $publication['id'] ?>" class="btn btn-outline-warning hover-shadow" title="View Details">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                         <a href="<?= BASE_URL ?>admin/edit_publication/<?= $publication['id'] ?>" class="btn btn-outline-secondary hover-shadow" title="Edit Publication">

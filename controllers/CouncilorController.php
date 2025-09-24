@@ -193,6 +193,38 @@ class CouncilorController extends Controller {
         $this->loadAdminView('admin/edit_councilor', $data);
     }
     
+    public function admin_view($id = null) {
+        $this->requireAuth();
+        
+        if (!$id) {
+            $this->redirect('admin/councilors');
+        }
+        
+        $councilorModel = new Councilor();
+        $councilor = $councilorModel->findById($id);
+        
+        if (!$councilor) {
+            $_SESSION['error'] = 'Councilor not found';
+            $this->redirect('admin/councilors');
+        }
+        
+        // Get statistics
+        $councilor['ordinance_count'] = $councilorModel->getOrdinanceCount($id);
+        $councilor['resolution_count'] = $councilorModel->getResolutionCount($id);
+        
+        // Get recent ordinances and resolutions
+        $recent_ordinances = $councilorModel->getOrdinances($id);
+        $recent_resolutions = $councilorModel->getResolutions($id);
+        
+        $data = [
+            'councilor' => $councilor,
+            'recent_ordinances' => $recent_ordinances,
+            'recent_resolutions' => $recent_resolutions
+        ];
+        
+        $this->loadAdminView('admin/view_councilor', $data);
+    }
+    
     public function admin_delete($id = null) {
         $this->requireAuth();
         

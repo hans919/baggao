@@ -11,7 +11,7 @@ ob_start();
 ?>
 
 <style>
-    /* Ensure pure white background for resolutions page */
+    /* Ensure pure white background */
     .main-content {
         background-color: #ffffff !important;
     }
@@ -62,7 +62,22 @@ ob_start();
     /* Override any gradient or colored backgrounds */
     .admin-wrapper,
     .admin-content,
-    body {
+    body, .wrapper, .main-wrapper {
+        background-color: #ffffff !important;
+    }
+    
+    /* Form inputs white background */
+    .form-control, .form-select {
+        background-color: #ffffff !important;
+    }
+    
+    /* Modal backgrounds */
+    .modal-content {
+        background-color: #ffffff !important;
+    }
+    
+    /* Dropdown menus */
+    .dropdown-menu {
         background-color: #ffffff !important;
     }
 </style>
@@ -301,7 +316,7 @@ ob_start();
                                 </td>
                                 <td class="text-end pe-4">
                                     <div class="btn-group btn-group-sm">
-                                        <a href="<?= BASE_URL ?>resolutions/view/<?= $resolution['id'] ?>" class="btn btn-outline-success hover-shadow" title="View Details">
+                                        <a href="<?= BASE_URL ?>admin/view_resolution/<?= $resolution['id'] ?>" class="btn btn-outline-success hover-shadow" title="View Details">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                         <a href="<?= BASE_URL ?>admin/edit_resolution/<?= $resolution['id'] ?>" class="btn btn-outline-secondary hover-shadow" title="Edit Resolution">

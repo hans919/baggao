@@ -72,5 +72,25 @@ class PublicationController extends Controller {
             $this->redirect('publications');
         }
     }
+    
+    public function admin_view($id) {
+        $this->requireAuth();
+        
+        if (!$id) {
+            $_SESSION['error'] = 'Publication ID is required.';
+            $this->redirect('admin/publications');
+        }
+        
+        $publicationModel = new Publication();
+        $publication = $publicationModel->findById($id);
+        
+        if (!$publication) {
+            $_SESSION['error'] = 'Publication not found.';
+            $this->redirect('admin/publications');
+        }
+        
+        $data = ['publication' => $publication];
+        $this->loadView('admin/view_publication', $data);
+    }
 }
 ?>

@@ -136,9 +136,10 @@ $request_uri = $_SERVER['REQUEST_URI'];
                 <a href="<?= BASE_URL ?>admin/users" 
                    class="menu-item <?= $current_page === 'users' ? 'active' : '' ?>">
                     <div class="menu-icon">
-                        <i class="bi bi-people"></i>
+                        <i class="bi bi-person-gear"></i>
                     </div>
-                    <span class="menu-text">Users</span>
+                    <span class="menu-text">User Accounts</span>
+                    <span class="menu-badge"><?= isset($stats['total_users']) ? $stats['total_users'] : '0' ?></span>
                 </a>
 
                 <a href="<?= BASE_URL ?>admin/settings" 

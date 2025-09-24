@@ -190,7 +190,7 @@ ob_start();
             <!-- Action Buttons -->
             <div class="card-footer bg-transparent border-0 pt-0">
                 <div class="d-flex gap-2">
-                    <a href="<?= BASE_URL ?>councilors/view/<?= $councilor['id'] ?>" 
+                    <a href="<?= BASE_URL ?>admin/view_councilor/<?= $councilor['id'] ?>" 
                        class="btn btn-outline-info btn-sm flex-grow-1">
                         <i class="bi bi-eye me-1"></i>View
                     </a>

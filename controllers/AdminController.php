@@ -14,13 +14,15 @@ class AdminController extends Controller {
         $minuteModel = new Minute();
         $publicationModel = new Publication();
         $councilorModel = new Councilor();
+        $userModel = new User();
         
         $stats = [
             'total_ordinances' => count($ordinanceModel->findAll()),
             'total_resolutions' => count($resolutionModel->findAll()),
             'total_minutes' => count($minuteModel->findAll()),
             'total_publications' => count($publicationModel->findAll()),
-            'total_councilors' => count($councilorModel->getActive())
+            'total_councilors' => count($councilorModel->getActive()),
+            'total_users' => count($userModel->getAll())
         ];
         
         $data = [
@@ -132,6 +134,13 @@ class AdminController extends Controller {
         $this->loadAdminView('admin/edit_ordinance', $data);
     }
     
+    public function view_ordinance($id = null) {
+        $this->requireAuth();
+        
+        $ordinanceController = new OrdinanceController();
+        $ordinanceController->admin_view($id);
+    }
+    
     // Resolution management
     public function resolutions() {
         $this->requireAuth();
@@ -231,6 +240,18 @@ class AdminController extends Controller {
             'councilors' => $councilorModel->getActive()
         ];
         $this->loadAdminView('admin/edit_resolution', $data);
+    }
+    
+    public function view_resolution($id = null) {
+        $this->requireAuth();
+        
+        if (!$id) {
+            $_SESSION['error'] = 'Resolution ID is required.';
+            $this->redirect('admin/resolutions');
+        }
+        
+        $resolutionController = new ResolutionController();
+        $resolutionController->admin_view($id);
     }
     
     // Minutes management
@@ -575,6 +596,18 @@ class AdminController extends Controller {
         $this->loadAdminView('admin/edit_publication', $data);
     }
     
+    public function view_publication($id = null) {
+        $this->requireAuth();
+        
+        if (!$id) {
+            $_SESSION['error'] = 'Publication ID is required.';
+            $this->redirect('admin/publications');
+        }
+        
+        $publicationController = new PublicationController();
+        $publicationController->admin_view($id);
+    }
+    
     // Councilors management
     public function councilors() {
         $this->requireAuth();
@@ -595,6 +628,13 @@ class AdminController extends Controller {
         
         $councilorController = new CouncilorController();
         $councilorController->admin_edit($id);
+    }
+    
+    public function view_councilor($id = null) {
+        $this->requireAuth();
+        
+        $councilorController = new CouncilorController();
+        $councilorController->admin_view($id);
     }
     
     public function delete_councilor($id = null) {
@@ -690,6 +730,81 @@ class AdminController extends Controller {
         
         $_SESSION['error'] = 'Failed to upload file. Please try again.';
         return false;
+    }
+    
+    // User management
+    public function users() {
+        $this->requireAuth();
+        
+        $userController = new UserController();
+        $userController->admin_index();
+    }
+    
+    public function add_user() {
+        $this->requireAuth();
+        
+        $userController = new UserController();
+        $userController->admin_add();
+    }
+    
+    public function edit_user($id = null) {
+        $this->requireAuth();
+        
+        if (!$id) {
+            $_SESSION['error'] = 'User ID is required.';
+            $this->redirect('admin/users');
+        }
+        
+        $userController = new UserController();
+        $userController->admin_edit($id);
+    }
+    
+    public function view_user($id = null) {
+        $this->requireAuth();
+        
+        if (!$id) {
+            $_SESSION['error'] = 'User ID is required.';
+            $this->redirect('admin/users');
+        }
+        
+        $userController = new UserController();
+        $userController->admin_view($id);
+    }
+    
+    public function change_password($id = null) {
+        $this->requireAuth();
+        
+        if (!$id) {
+            $_SESSION['error'] = 'User ID is required.';
+            $this->redirect('admin/users');
+        }
+        
+        $userController = new UserController();
+        $userController->admin_change_password($id);
+    }
+    
+    public function delete_user($id = null) {
+        $this->requireAuth();
+        
+        if (!$id) {
+            $_SESSION['error'] = 'User ID is required.';
+            $this->redirect('admin/users');
+        }
+        
+        $userController = new UserController();
+        $userController->admin_delete($id);
+    }
+    
+    public function toggle_user_status($id = null) {
+        $this->requireAuth();
+        
+        if (!$id) {
+            $_SESSION['error'] = 'User ID is required.';
+            $this->redirect('admin/users');
+        }
+        
+        $userController = new UserController();
+        $userController->admin_toggle_status($id);
     }
 }
 ?>

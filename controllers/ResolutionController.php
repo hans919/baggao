@@ -64,5 +64,25 @@ class ResolutionController extends Controller {
             $this->redirect('resolutions');
         }
     }
+    
+    public function admin_view($id) {
+        $this->requireAuth();
+        
+        if (!$id) {
+            $_SESSION['error'] = 'Resolution ID is required.';
+            $this->redirect('admin/resolutions');
+        }
+        
+        $resolutionModel = new Resolution();
+        $resolution = $resolutionModel->findByIdWithAuthor($id);
+        
+        if (!$resolution) {
+            $_SESSION['error'] = 'Resolution not found.';
+            $this->redirect('admin/resolutions');
+        }
+        
+        $data = ['resolution' => $resolution];
+        $this->loadView('admin/view_resolution', $data);
+    }
 }
 ?>
