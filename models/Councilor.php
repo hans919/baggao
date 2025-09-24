@@ -35,5 +35,46 @@ class Councilor extends Model {
         $stmt->execute([$councilor_id]);
         return $stmt->fetchAll();
     }
+    
+    public function getOrdinanceCount($councilor_id) {
+        $sql = "SELECT COUNT(*) FROM ordinances WHERE author_id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$councilor_id]);
+        return $stmt->fetchColumn();
+    }
+    
+    public function getResolutionCount($councilor_id) {
+        $sql = "SELECT COUNT(*) FROM resolutions WHERE author_id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$councilor_id]);
+        return $stmt->fetchColumn();
+    }
+    
+    public function search($query, $fields = ['name', 'position', 'committees']) {
+        if (empty($fields)) {
+            $fields = ['name', 'position', 'committees'];
+        }
+        
+        $where_conditions = [];
+        $params = [];
+        
+        foreach ($fields as $field) {
+            $where_conditions[] = "{$field} LIKE ?";
+            $params[] = "%{$query}%";
+        }
+        
+        $where_clause = implode(' OR ', $where_conditions);
+        $sql = "SELECT * FROM councilors WHERE {$where_clause} ORDER BY name";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+    
+    public function getByStatus($status) {
+        $stmt = $this->db->prepare("SELECT * FROM councilors WHERE status = ? ORDER BY name");
+        $stmt->execute([$status]);
+        return $stmt->fetchAll();
+    }
 }
 ?>

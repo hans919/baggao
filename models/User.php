@@ -2,6 +2,12 @@
 class User extends Model {
     protected $table = 'users';
     
+    public function getAll() {
+        $stmt = $this->db->prepare("SELECT id, email, role, full_name, created_at FROM users ORDER BY full_name");
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+    
     public function authenticate($email, $password) {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->execute([$email]);
@@ -36,4 +42,5 @@ class User extends Model {
         return $stmt->execute([$hashed_password, $email]);
     }
 }
+?>
 ?>

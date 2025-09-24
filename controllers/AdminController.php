@@ -238,7 +238,22 @@ class AdminController extends Controller {
         $this->requireAuth();
         
         $minuteModel = new Minute();
-        $data = ['minutes' => $minuteModel->findAll()];
+        $search = $_GET['search'] ?? '';
+        $status = $_GET['status'] ?? '';
+        
+        if (!empty($search)) {
+            $minutes = $minuteModel->searchPublished($search);
+        } elseif (!empty($status)) {
+            $minutes = $minuteModel->getByStatus($status);
+        } else {
+            $minutes = $minuteModel->getAll();
+        }
+        
+        $data = [
+            'minutes' => $minutes,
+            'current_search' => $search,
+            'current_status' => $status
+        ];
         
         $this->loadAdminView('admin/minutes', $data);
     }
@@ -247,35 +262,230 @@ class AdminController extends Controller {
         $this->requireAuth();
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $minuteModel = new Minute();
+            $this->handleAddMinute();
+        } else {
+            $councilorModel = new Councilor();
+            $agendaModel = new AgendaItem();
+            $userModel = new User();
             
             $data = [
-                'meeting_date' => $_POST['meeting_date'],
-                'session_type' => $_POST['session_type'],
-                'agenda' => $_POST['agenda'],
-                'attendees' => $_POST['attendees'],
-                'summary' => $_POST['summary'],
-                'status' => $_POST['status']
+                'councilors' => $councilorModel->getActive(),
+                'agenda_items' => $agendaModel->getReusableItems(),
+                'users' => $userModel->getAll(),
+                'standard_agenda' => $agendaModel->getStandardItems()
             ];
             
-            // Handle file upload
-            if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-                $file_path = $this->uploadFile($_FILES['file'], 'minutes');
-                if ($file_path) {
-                    $data['file_path'] = $file_path;
+            $this->loadAdminView('admin/add_minute', $data);
+        }
+    }
+    
+    private function handleAddMinute() {
+        $minuteModel = new Minute();
+        
+        // Basic minute data
+        $minuteData = [
+            'meeting_date' => $_POST['meeting_date'],
+            'meeting_start_time' => $_POST['meeting_start_time'] ?? null,
+            'meeting_end_time' => $_POST['meeting_end_time'] ?? null,
+            'meeting_location' => $_POST['meeting_location'] ?? 'Municipal Council Chamber',
+            'session_type' => $_POST['session_type'],
+            'meeting_type' => $_POST['meeting_type'] ?? 'regular',
+            'summary' => $_POST['summary'],
+            'status' => $_POST['status'] ?? 'draft',
+            'chairperson_id' => $_POST['chairperson_id'] ?? null,
+            'secretary_id' => $_POST['secretary_id'] ?? null,
+            'quorum_met' => isset($_POST['quorum_met']) ? 1 : 0
+        ];
+        
+        // Handle file upload
+        if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+            $file_path = $this->uploadFile($_FILES['file'], 'minutes');
+            if ($file_path) {
+                $minuteData['file_path'] = $file_path;
+            }
+        }
+        
+        $minute_id = $minuteModel->create($minuteData);
+        
+        if ($minute_id) {
+            // Add attendees
+            if (isset($_POST['attendees']) && is_array($_POST['attendees'])) {
+                foreach ($_POST['attendees'] as $councilor_id => $attendance_data) {
+                    if (isset($attendance_data['attending'])) {
+                        $minuteModel->addAttendee(
+                            $minute_id,
+                            $councilor_id,
+                            $attendance_data['status'] ?? 'present',
+                            $attendance_data['arrival_time'] ?? null,
+                            $attendance_data['departure_time'] ?? null,
+                            $attendance_data['notes'] ?? null
+                        );
+                    }
                 }
             }
             
-            if ($minuteModel->create($data)) {
-                $_SESSION['success'] = 'Meeting minutes added successfully';
-            } else {
-                $_SESSION['error'] = 'Failed to add meeting minutes';
+            // Add agenda items
+            if (isset($_POST['agenda_items']) && is_array($_POST['agenda_items'])) {
+                foreach ($_POST['agenda_items'] as $order => $agenda_data) {
+                    if (!empty($agenda_data['agenda_item_id'])) {
+                        $minuteModel->addAgendaItem(
+                            $minute_id,
+                            $agenda_data['agenda_item_id'],
+                            $order + 1,
+                            $agenda_data['discussion_summary'] ?? null,
+                            $agenda_data['decision_made'] ?? null,
+                            $agenda_data['status'] ?? 'discussed'
+                        );
+                    }
+                }
             }
             
+            // Add action items
+            if (isset($_POST['action_items']) && is_array($_POST['action_items'])) {
+                $actionModel = new ActionItem();
+                foreach ($_POST['action_items'] as $action_data) {
+                    if (!empty($action_data['title'])) {
+                        $actionModel->create([
+                            'minute_id' => $minute_id,
+                            'agenda_item_id' => $action_data['agenda_item_id'] ?? null,
+                            'title' => $action_data['title'],
+                            'description' => $action_data['description'],
+                            'assigned_to' => $action_data['assigned_to'] ?? null,
+                            'due_date' => $action_data['due_date'] ?? null,
+                            'priority' => $action_data['priority'] ?? 'medium'
+                        ]);
+                    }
+                }
+            }
+            
+            $_SESSION['success'] = 'Meeting minutes created successfully.';
+            $this->redirect('admin/minutes');
+        } else {
+            $_SESSION['error'] = 'Failed to create meeting minutes.';
+            $this->redirect('admin/add_minute');
+        }
+    }
+    
+    public function edit_minute($id = null) {
+        $this->requireAuth();
+        
+        if (!$id) {
+            $_SESSION['error'] = 'Invalid minute ID';
             $this->redirect('admin/minutes');
         }
         
-        $this->loadAdminView('admin/add_minute');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->handleEditMinute($id);
+        } else {
+            $minuteModel = new Minute();
+            $councilorModel = new Councilor();
+            $agendaModel = new AgendaItem();
+            $userModel = new User();
+            
+            $minute = $minuteModel->getWithDetails($id);
+            if (!$minute) {
+                $_SESSION['error'] = 'Meeting minutes not found';
+                $this->redirect('admin/minutes');
+            }
+            
+            $data = [
+                'minute' => $minute,
+                'councilors' => $councilorModel->getActive(),
+                'agenda_items' => $agendaModel->getReusableItems(),
+                'users' => $userModel->getAll()
+            ];
+            
+            $this->loadAdminView('admin/edit_minute', $data);
+        }
+    }
+    
+    private function handleEditMinute($id) {
+        $minuteModel = new Minute();
+        
+        // Basic minute data
+        $minuteData = [
+            'meeting_date' => $_POST['meeting_date'],
+            'meeting_start_time' => $_POST['meeting_start_time'] ?? null,
+            'meeting_end_time' => $_POST['meeting_end_time'] ?? null,
+            'meeting_location' => $_POST['meeting_location'] ?? 'Municipal Council Chamber',
+            'session_type' => $_POST['session_type'],
+            'meeting_type' => $_POST['meeting_type'] ?? 'regular',
+            'summary' => $_POST['summary'],
+            'status' => $_POST['status'] ?? 'draft',
+            'chairperson_id' => $_POST['chairperson_id'] ?? null,
+            'secretary_id' => $_POST['secretary_id'] ?? null,
+            'quorum_met' => isset($_POST['quorum_met']) ? 1 : 0
+        ];
+        
+        // Handle file upload
+        if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+            $file_path = $this->uploadFile($_FILES['file'], 'minutes');
+            if ($file_path) {
+                $minuteData['file_path'] = $file_path;
+            }
+        }
+        
+        if ($minuteModel->update($id, $minuteData)) {
+            // Update attendees - remove all and re-add
+            $minuteModel->db->prepare("DELETE FROM minute_attendees WHERE minute_id = ?")->execute([$id]);
+            
+            if (isset($_POST['attendees']) && is_array($_POST['attendees'])) {
+                foreach ($_POST['attendees'] as $councilor_id => $attendance_data) {
+                    if (isset($attendance_data['attending'])) {
+                        $minuteModel->addAttendee(
+                            $id,
+                            $councilor_id,
+                            $attendance_data['status'] ?? 'present',
+                            $attendance_data['arrival_time'] ?? null,
+                            $attendance_data['departure_time'] ?? null,
+                            $attendance_data['notes'] ?? null
+                        );
+                    }
+                }
+            }
+            
+            // Update agenda items - remove all and re-add
+            $minuteModel->db->prepare("DELETE FROM minute_agenda_items WHERE minute_id = ?")->execute([$id]);
+            
+            if (isset($_POST['agenda_items']) && is_array($_POST['agenda_items'])) {
+                foreach ($_POST['agenda_items'] as $order => $agenda_data) {
+                    if (!empty($agenda_data['agenda_item_id'])) {
+                        $minuteModel->addAgendaItem(
+                            $id,
+                            $agenda_data['agenda_item_id'],
+                            $order + 1,
+                            $agenda_data['discussion_summary'] ?? null,
+                            $agenda_data['decision_made'] ?? null,
+                            $agenda_data['status'] ?? 'discussed'
+                        );
+                    }
+                }
+            }
+            
+            $_SESSION['success'] = 'Meeting minutes updated successfully.';
+        } else {
+            $_SESSION['error'] = 'Failed to update meeting minutes.';
+        }
+        
+        $this->redirect('admin/minutes');
+    }
+    
+    public function delete_minute($id = null) {
+        $this->requireAuth();
+        
+        if (!$id) {
+            $_SESSION['error'] = 'Invalid minute ID';
+            $this->redirect('admin/minutes');
+        }
+        
+        $minuteModel = new Minute();
+        if ($minuteModel->delete($id)) {
+            $_SESSION['success'] = 'Meeting minutes deleted successfully.';
+        } else {
+            $_SESSION['error'] = 'Failed to delete meeting minutes.';
+        }
+        
+        $this->redirect('admin/minutes');
     }
     
     // Publications management
@@ -365,6 +575,35 @@ class AdminController extends Controller {
         $this->loadAdminView('admin/edit_publication', $data);
     }
     
+    // Councilors management
+    public function councilors() {
+        $this->requireAuth();
+        
+        $councilorController = new CouncilorController();
+        $councilorController->admin_index();
+    }
+    
+    public function add_councilor() {
+        $this->requireAuth();
+        
+        $councilorController = new CouncilorController();
+        $councilorController->admin_add();
+    }
+    
+    public function edit_councilor($id = null) {
+        $this->requireAuth();
+        
+        $councilorController = new CouncilorController();
+        $councilorController->admin_edit($id);
+    }
+    
+    public function delete_councilor($id = null) {
+        $this->requireAuth();
+        
+        $councilorController = new CouncilorController();
+        $councilorController->admin_delete($id);
+    }
+
     // Delete functions
     public function delete($type, $id) {
         $this->requireAuth();

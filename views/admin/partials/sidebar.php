@@ -91,6 +91,15 @@ $request_uri = $_SERVER['REQUEST_URI'];
                     <span class="menu-text">Publications</span>
                     <span class="menu-badge"><?= isset($stats['total_publications']) ? $stats['total_publications'] : '0' ?></span>
                 </a>
+
+                <a href="<?= BASE_URL ?>admin/councilors" 
+                   class="menu-item <?= $current_page === 'councilors' || strpos($request_uri, '/councilors') !== false ? 'active' : '' ?>">
+                    <div class="menu-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <span class="menu-text">Councilors</span>
+                    <span class="menu-badge"><?= isset($stats['total_councilors']) ? $stats['total_councilors'] : '0' ?></span>
+                </a>
             </div>
         </div>
 
@@ -145,23 +154,6 @@ $request_uri = $_SERVER['REQUEST_URI'];
 
     <!-- Sidebar Footer -->
     <div class="sidebar-footer">
-        <!-- Quick Stats Card -->
-        <div class="stats-card">
-            <div class="stats-header">
-                <h6 class="stats-title">Quick Stats</h6>
-            </div>
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-value"><?= isset($stats['total_ordinances']) ? $stats['total_ordinances'] : '0' ?></div>
-                    <div class="stat-label">Ordinances</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value"><?= isset($stats['total_resolutions']) ? $stats['total_resolutions'] : '0' ?></div>
-                    <div class="stat-label">Resolutions</div>
-                </div>
-            </div>
-        </div>
-
         <!-- User Profile -->
         <div class="user-profile">
             <div class="user-avatar">

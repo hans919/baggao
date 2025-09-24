@@ -67,6 +67,10 @@ ob_start();
                 <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/add_publication">
                     <i class="bi bi-megaphone me-2"></i>New Publication
                 </a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="<?= BASE_URL ?>admin/add_councilor">
+                    <i class="bi bi-people me-2"></i>New Councilor
+                </a></li>
             </ul>
         </div>
     </div>
@@ -159,6 +163,30 @@ ob_start();
     </div>
 </div>
 
+<!-- Second Row for Councilors Card -->
+<div class="row g-4 mb-5">
+    <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm hover-shadow position-relative overflow-hidden">
+            <div class="card-body text-center p-4">
+                <div class="position-absolute top-0 end-0 p-2">
+                    <div class="badge bg-secondary bg-opacity-10 text-secondary">
+                        <i class="bi bi-arrow-up-right"></i>
+                    </div>
+                </div>
+                <div class="bg-secondary bg-opacity-10 rounded-3 d-inline-flex align-items-center justify-content-center mb-3" style="width: 72px; height: 72px;">
+                    <i class="bi bi-people text-secondary" style="font-size: 1.75rem;"></i>
+                </div>
+                <h2 class="fw-bold text-secondary mb-2" style="font-size: 2rem;"><?= $stats['total_councilors'] ?></h2>
+                <p class="text-muted mb-3 fw-medium">Councilors</p>
+                <a href="<?= BASE_URL ?>admin/councilors" class="btn btn-outline-secondary btn-sm px-3">
+                    <i class="bi bi-arrow-right me-1"></i>Manage All
+                </a>
+            </div>
+            <div class="position-absolute bottom-0 start-0 w-100" style="height: 4px; background: linear-gradient(90deg, hsl(210 11% 71%) 0%, hsl(210 11% 71% / 0.7) 100%);"></div>
+        </div>
+    </div>
+</div>
+
 <div class="row g-4">
     <!-- Quick Actions -->
     <div class="col-lg-4">
@@ -203,6 +231,17 @@ ob_start();
                         <div class="flex-grow-1">
                             <div class="fw-semibold">Add Meeting Minutes</div>
                             <small class="text-muted">Record new meeting minutes</small>
+                        </div>
+                        <i class="bi bi-arrow-right text-muted"></i>
+                    </a>
+                    
+                    <a href="<?= BASE_URL ?>admin/add_councilor" class="btn btn-outline-secondary d-flex align-items-center justify-content-start p-3 text-start border-2 hover-shadow">
+                        <div class="bg-secondary bg-opacity-10 rounded-2 p-2 me-3">
+                            <i class="bi bi-people text-secondary"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="fw-semibold">Add New Councilor</div>
+                            <small class="text-muted">Add councilor profile and details</small>
                         </div>
                         <i class="bi bi-arrow-right text-muted"></i>
                     </a>
